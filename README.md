@@ -67,7 +67,14 @@ SciFact test set, 300 queries, 4 threads, rerank depth 50.
 | exact_small_rerank | 0.6273 | 0.7772 | 0.4723 | 600 | 691 | 586 | 2479 |
 | **exact_onnx_rerank** | **0.6541** | 0.7987 | **0.5015** | 909 | 1036 | 896 | 4328 |
 
-**Charts:** `reports/relevance_vs_latency.png`, `reports/latency_breakdown.png`
+![Relevance vs latency trade-off](reports/relevance_vs_latency.png)
+
+*`retrieve_only_exact` (bottom-left) reaches almost the same nDCG@10 as the best reranked
+variant at ~85× lower latency.*
+
+<p align="center">
+  <img src="reports/latency_breakdown.png" width="80%" alt="Latency breakdown by stage — rerank dominates, retrieval ~0.5ms" />
+</p>
 
 **Recommendation:**
 - **Cost/latency pick: `retrieve_only_exact`** — nDCG@10 0.648 at **10.7 ms**, ~85×
@@ -103,7 +110,7 @@ FastAPI service, closed-loop async load test, concurrency 8, 120 requests/varian
 | exact_small_rerank | 3.1 | 2674 | 3133 | 3244 | 0.0% |
 | exact_onnx_rerank | 1.9 | 4163 | 4766 | 4958 | 0.0% |
 
-**Chart:** `reports/loadtest_qps_p95.png`
+![Serving throughput vs p95 latency under concurrency](reports/loadtest_qps_p95.png)
 
 Under concurrency the gap widens: retrieve-only sustains **61 QPS at <200 ms p95**, while every
 reranked variant is CPU-bound and collapses to 0.6–3.1 QPS with multi-second p95 (the 4-thread
@@ -137,6 +144,29 @@ py -3.11 -m venv .venv
 .venv/Scripts/python benchmarks/offline_bench.py           # relevance/latency/cost table
 .venv/Scripts/python benchmarks/serve_and_loadtest.py --concurrency 8 --requests 120
 ```
+
+## Try it
+
+After `prepare_data.py`, `build_index.py` (and `export_reranker.py` for the onnx variant),
+run a live query through the pipeline:
+
+```bash
+.venv/Scripts/python demo_search.py --variant exact_onnx_rerank \
+  "does vitamin D deficiency increase risk of cardiovascular disease?"
+```
+
+```
+variant : exact_onnx_rerank
+latency : 1276.1 ms  (encode 133.9 | retrieve 3.2 | rerank 1138.9)
+
+  1. [30720103] Vitamin D status: measurement, interpretation, and clinical application...
+  2. [12810152] Folate and vitamin B6 from diet and supplements in relation to risk of ...
+  3. [16252863] Preventing coronary heart disease: B vitamins and homocysteine...
+```
+
+The breakdown makes the whole project's point in one line: the reranker is ~1.1 s of a
+~1.3 s request; retrieval is 3 ms. Swap `--variant retrieve_only_exact` to serve the same
+top results in ~10 ms.
 
 ## Business impact
 
