@@ -1,0 +1,11 @@
+# Normalize line endings to LF in the repo.
+* text=auto eol=lf
+
+# Binary assets — never diff/normalize.
+*.png binary
+*.jpg binary
+*.onnx binary
+*.safetensors binary
+*.bin binary
+*.parquet binary
+*.npy binary

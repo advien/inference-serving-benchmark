@@ -1,0 +1,29 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Heavy, reproducible build outputs (see README.md "Repro")
+/index/
+/artifacts/
+/data/raw/
+/data/corpus.jsonl
+/data/queries.jsonl
+/data/relevance_labels/
+
+# Internal planning docs — not for the public repo
+/BLUEPRINT.md
+/dataset_options.md
+/tech_stack.md
+/prompts/
+
+# Keep reports/ (small charts + tables) tracked for the writeup.
+!reports/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

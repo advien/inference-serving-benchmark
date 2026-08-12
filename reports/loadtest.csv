@@ -1,0 +1,6 @@
+variant,concurrency,requests,qps,p50_ms,p95_ms,p99_ms,error_rate
+retrieve_only_exact,8,120,61.2,128.5,178.9,235.6,0.0
+exact_full_rerank,8,120,1.2,6194.1,9435.0,11327.7,0.0
+approx_full_rerank,8,120,0.6,8147.8,75729.1,78563.5,0.0667
+exact_small_rerank,8,120,3.1,2674.4,3132.7,3243.6,0.0
+exact_onnx_rerank,8,120,1.9,4162.9,4765.9,4957.9,0.0
